@@ -12,35 +12,28 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [largeImageUrl, setLargeImageUrl] = useState('');
 
-   
-
   useEffect(() => {
+    const fetchImages = async () => {
+      if (!query) return;
+
+      setIsLoading(true);
+
+      try {
+        const response = await axios.get(
+          `https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+        );
+        const newImages = response.data.hits;
+
+        setImages((prevImages) => (page === 1 ? newImages : [...prevImages, ...newImages]));
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchImages();
   }, [query, page]);
-
-  const fetchImages = async () => {
-    if (!query) return;
-
-    setIsLoading(true);
-
-    try {
-      const response = await axios.get(
-        `https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-      );
-      const newImages = response.data.hits;
-
-      setImages((prevImages) => (page === 1 ? newImages : [...prevImages, ...newImages]));
-    } catch (error) {
-      console.error('Error fetching images:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmit = (query) => {
-    setQuery(query);
-    setPage(1);
-  };
 
   const handleLoadMore = () => {
     setPage((prevPage) => prevPage + 1);
@@ -112,4 +105,3 @@ const App = () => {
 };
 
 export default App;
-       
