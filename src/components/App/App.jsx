@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import './style.css'; 
+
+
 const API_KEY = '37760459-bf670a4af420eae2f9d25b705';
 
 class App extends Component {

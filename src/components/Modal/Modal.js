@@ -1,16 +1,20 @@
-import React from 'react';
-import './styles.css';
+import React, { Component } from 'react';
+import './Modal.module.css';
 
-const Modal = ({ isOpen, onClose, imageUrl }) => {
-  if (!isOpen) return null;
+class Modal extends Component {
+  render() {
+    const { isOpen, onClose, imageUrl } = this.props;
+    
+    if (!isOpen) return null;
 
-  return (
-    <div className="Overlay" onClick={onClose}>
-      <div className="Modal">
-        <img src={imageUrl} alt="" />
+    return (
+      <div className="Overlay" onClick={onClose}>
+        <div className="Modal">
+          <img src={imageUrl} alt="" />
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default Modal;
