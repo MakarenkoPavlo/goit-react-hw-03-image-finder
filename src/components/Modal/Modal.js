@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Modal.module.css';
+import styles from './Modal.module.css';
 
 class Modal extends Component {
   render() {
@@ -8,8 +8,8 @@ class Modal extends Component {
     if (!isOpen) return null;
 
     return (
-      <div className="Overlay" onClick={onClose}>
-        <div className="Modal">
+      <div className={styles.Overlay} onClick={onClose}>
+        <div className={styles.Modal}>
           <img src={imageUrl} alt="" />
         </div>
       </div>
@@ -18,3 +18,8 @@ class Modal extends Component {
 }
 
 export default Modal;
+
+
+
+
+

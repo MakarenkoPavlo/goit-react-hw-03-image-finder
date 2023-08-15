@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import './App.module.css'
-
+import styles from './App.module.css';
+import ImageGallery from '../ImageGallery/ImageGallery';
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+import Loader from '../Loader/Loader';
+import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
+import Searchbar from '../Searchbar/Searchbar';
 
 const API_KEY = '37760459-bf670a4af420eae2f9d25b705';
 
@@ -47,15 +52,16 @@ class App extends Component {
     }
   };
 
-  handleQueryChange = (query) => {
-    this.setState({ query, page: 1 });
+  handleSubmit = (query) => {
+    this.setState({ query, page: 1, images: [] });
   };
 
   handleLoadMore = () => {
     this.setState((prevState) => ({ page: prevState.page + 1 }));
   };
- handleImageClick = (largeImageURL) => {
-    this.setState({ largeImageUrl: largeImageURL, showModal: true }); 
+
+  handleImageClick = (largeImageURL) => {
+    this.setState({ largeImageUrl: largeImageURL, showModal: true });
   };
 
   handleCloseModal = () => {
@@ -63,59 +69,26 @@ class App extends Component {
   };
 
   render() {
-    const { query, images, isLoading, showModal, largeImageUrl } = this.state;
+    const { images, isLoading, showModal, largeImageUrl } = this.state;
 
     return (
-      <div className="App">
-        <header className="Searchbar">
-          <form className="SearchForm" onSubmit={(e) => e.preventDefault()}>
-            <button type="submit" className="SearchForm-button">
-              <span className="SearchForm-button-label">Search</span>
-            </button>
-
-            <input
-              className="SearchForm-input"
-              type="text"
-              autoComplete="off"
-              autoFocus
-              placeholder="Search images and photos"
-              value={query}
-              onChange={(e) => this.handleQueryChange(e.target.value)}
-            />
-          </form>
-        </header>
-
-        <ul className="ImageGallery">
+      <div className={styles.App}>
+        <Searchbar onSubmit={this.handleSubmit} />
+        <ImageGallery>
           {images.map((image) => (
-            <li className="ImageGalleryItem" key={image.id}>
-              <img
-                src={image.webformatURL}
-                alt=""
-                className="ImageGalleryItem-image"
-                onClick={() => this.handleImageClick(image.largeImageURL)}
-              />
-            </li>
+            <ImageGalleryItem
+              key={image.id}
+              image={image}
+              onClick={this.handleImageClick}
+            />
           ))}
-        </ul>
-
-        {isLoading && (
-          <div className="Loader">
-            <div className="Loader-spinner"></div>
-          </div>
+        </ImageGallery>
+        {isLoading && <Loader />}
+        {images.length > 0 && !isLoading && images.length % 12 === 0 && (
+          <Button onClick={this.handleLoadMore}>Load more</Button>
         )}
-
-        {images.length > 0 && !isLoading && (
-          <button className="Button" onClick={this.handleLoadMore}>
-            Load more
-          </button>
-        )}
-
         {showModal && (
-          <div className="Overlay" onClick={this.handleCloseModal}>
-            <div className="Modal">
-              <img src={largeImageUrl} alt="" />
-            </div>
-          </div>
+          <Modal isOpen={showModal} onClose={this.handleCloseModal} imageUrl={largeImageUrl} />
         )}
       </div>
     );
